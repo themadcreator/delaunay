@@ -40,6 +40,7 @@ triangulation asymptotic running time of O(n) for non-diabolical cases.
 The `DtfeTriangulationMap` class performs the **Delaunay Tessellation Field Estimator** (DTFE) (http://en.wikipedia.org/wiki/Delaunay_tessellation_field_estimator) in two dimensions, which enables the reconstruction of the continuous density field from a set of points.
 
 The DTFE is simple to understand:
+
 1. Construct a triangulation of the points.
 2. For each vertex, compute its density with the formula: density = point_mass / sum_of_area_of_neighboring_triangles
 3. To reconstruct the continuous field, interpolate the density using the vertex densities.
