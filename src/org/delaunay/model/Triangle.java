@@ -1,0 +1,133 @@
+package org.delaunay.model;
+
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+
+public class Triangle {
+	
+	public final Vertex a, b, c;
+	private final Vector circumCenter;
+	private final double rSquared;
+	private final LinkedHashSet<Vertex> vertices;
+	private final List<Edge> edges;
+	
+	public Triangle(Vertex v_a, Vertex v_b, Vertex v_c) {
+		// Enforce winding rule
+		boolean swap = v_c.orientation(v_a, v_b) > 0;
+
+		this.a = v_a;
+		this.b = swap ? v_c : v_b;
+		this.c = swap ? v_b : v_c;
+
+		this.vertices = Sets.newLinkedHashSet(Lists.newArrayList(a, b, c));
+		this.edges = Lists.newArrayList(
+				new Edge(a, b),
+				new Edge(c, a),
+				new Edge(b, c));
+
+		// compute circum center
+		// http://www.ics.uci.edu/~eppstein/junkyard/circumcenter.html    
+		double d = ((a.x - c.x) * (b.y - c.y) - (b.x - c.x) * (a.y - c.y)) * 2;
+		double c_x = (((a.x - c.x) * (a.x + c.x) + (a.y - c.y) * (a.y + c.y)) * (b.y - c.y) -
+				((b.x - c.x) * (b.x + c.x) + (b.y - c.y) * (b.y + c.y)) * (a.y - c.y))
+				/ d;
+		double c_y = (((b.x - c.x) * (b.x + c.x) + (b.y - c.y) * (b.y + c.y)) * (a.x - c.x) -
+				((a.x - c.x) * (a.x + c.x) + (a.y - c.y) * (a.y + c.y)) * (b.x - c.x))
+				/ d;
+		this.circumCenter = new Vector(c_x, c_y);
+		this.rSquared = (c.x - c_x) *  (c.x - c_x) + (c.y - c_y) *  (c.y - c_y);
+	}
+
+	public LinkedHashSet<Vertex> getVertices() {
+		return vertices;
+	}
+	
+	public boolean isInCircum(Vector v){
+		v = v.subtract(circumCenter);
+		return v.lengthSquared() <= rSquared;
+	}
+	
+	public Triangle nextWalk(Vector v) {
+		if (v.orientation(b, c) > 0) {
+			validateOpposites();
+			return oppositeBC;
+		} else if (v.orientation(c, a) > 0) {
+			validateOpposites();
+			return oppositeCA;
+		} else if (v.orientation(a, b) > 0) {
+			validateOpposites();
+			return oppositeAB;
+		}
+		return this;
+	}
+
+	public Triangle opposite(Vertex a, Vertex b) {
+		for (Triangle t : a.getNeighborTriangles()) {
+			if (t != this && t.vertices.contains(b)) {
+				return t;
+			}
+		}
+		return null;
+	}
+
+	// Cache opposites for performance
+	private Triangle oppositeAB = null;
+	private Triangle oppositeBC = null;
+	private Triangle oppositeCA = null;
+	private boolean valid = false;
+
+	private void validateOpposites() {
+		if (valid) {
+			return;
+		}
+		oppositeAB = opposite(a, b);
+		oppositeBC = opposite(b, c);
+		oppositeCA = opposite(c, a);
+		valid = true;
+	}
+
+	public void invalidateOpposites() {
+		valid = false;
+	}
+
+	public Set<Triangle> getNeighbors() {
+		Set<Triangle> set = Sets.newHashSet();
+		set.addAll(a.getNeighborTriangles());
+		set.addAll(b.getNeighborTriangles());
+		set.addAll(c.getNeighborTriangles());
+		set.remove(this);
+		return set;
+	}
+
+	public Iterable<Edge> getEdges() {
+		return edges;
+	}
+	
+	Double area = null;
+	
+	public double getArea() {
+		if (area == null) {
+			area = (c.subtract(a)).cross((b.subtract(a))) / 2.0;
+		}
+		return area;
+	}
+	
+//    # Tests this triangle to see if it satisfies the delaunay criteria
+//    # for its neighbors' vertices
+//    def delaunay?
+//      neighbor_verts = Set.new
+//      neighbors.each do |n|
+//        neighbor_verts.merge(n.vertices)
+//      end
+//      neighbor_verts.subtract(vertices)
+//      neighbor_verts.each do |v|
+//        return false if(in_circum?(v))
+//      end
+//      return true
+//    end
+}
