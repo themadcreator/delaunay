@@ -1,11 +1,9 @@
-package org.delaunay.algorithm;
+package org.delaunay.dtfe;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import org.delaunay.dtfe.DensityModel;
-import org.delaunay.dtfe.DtfeTriangulationMap;
 import org.delaunay.dtfe.DtfeTriangulationMap.ScaleType;
 import org.delaunay.model.Edge;
 import org.delaunay.model.Triangle;

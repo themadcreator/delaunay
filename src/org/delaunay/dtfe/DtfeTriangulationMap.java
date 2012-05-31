@@ -42,51 +42,8 @@ public class DtfeTriangulationMap<T extends DensityModel> extends TriangulationM
 		}
 	}
 	
-	public double getInterpolatedDensity(Vector v) {
-		Triangle tri = getTriangulation().locate(v);
-		
-		// Do not report density for triangles outside the convex hull of map
-		// vertices.
-		if (tri == null || getTriangulation().touchesSuperVertex(tri)) {
-			return 0.0;
-		}
-
-		Vertex a = tri.a;
-		Vertex b = tri.b;
-		Vertex c = tri.c;
-		
-		// This method uses barycentric coordinates.
-		// The only danger here is a divide by zero, which we check.
-		double det = (b.y - c.y) * (a.x - c.x) + (c.x - b.x) * (a.y - c.y);
-		if (det == 0.0) {
-			return 0.0;
-		}
-		double lambdaA = ((b.y - c.y) * (v.x - c.x) + (c.x - b.x) * (v.y - c.y)) / det;
-		double lambdaB = ((c.y - a.y) * (v.x - c.x) + (a.x - c.x) * (v.y - c.y)) / det;
-		double lambdaC = 1.0 - lambdaA - lambdaB;
-		double sum = lambdaA * getDensity(a) + lambdaB * getDensity(b) + lambdaC * getDensity(c);
-		return sum;
-	
-		// This method uses vector math
-//		Vertex[] verts = new Vertex[]{a,b,c};
-//		Vector an = tri.b.normalTo(tri.c).normalize();
-//		Vector bn = tri.c.normalTo(tri.a).normalize();
-//		Vector cn = tri.a.normalTo(tri.b).normalize();
-//		Vector[] norms = new Vector[]{an, bn, cn};
-//
-//		double aMax = an.dot(tri.b.subtract(tri.a));
-//		double bMax = bn.dot(tri.c.subtract(tri.b));
-//		double cMax = cn.dot(tri.a.subtract(tri.c));
-//		double[] maxes = new double[]{aMax, bMax, cMax};
-//
-//		double sum = 0.0;
-//		for(int i = 0; i < 3; i++){
-//			double dist = norms[i].dot(v.subtract(verts[i]));
-//			double coeff = 1.0 - dist / maxes[i];
-//			double dens = coeff * getDensity(verts[i]);
-//			sum += dens;
-//		}
-//		return sum;
+	public double getInterpolatedDensity(Vector v, InterpolationStrategy strategy) {
+		return strategy.getDensity(this, v);
 	}
 	
 	private Double maxDensity = null;
