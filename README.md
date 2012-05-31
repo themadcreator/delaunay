@@ -1,7 +1,7 @@
 delaunay
 ========
 
-Delaunay Triangulation with Hilbert Curve linearization and a Delaunay Tesselation Field Estimator (DTFE)
+Delaunay Triangulation for Java with Hilbert Curve linearization and a Delaunay Tesselation Field Estimator (DTFE)
 
 ### Three line demo ###
 ```Java
