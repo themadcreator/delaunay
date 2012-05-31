@@ -22,7 +22,6 @@ public class ColorScale{
 			this.offset = offset;
 		}
 
-		@Override
 		public int compareTo(ColorScale.Stop other) {
 			return offset.compareTo(other.offset);
 		}

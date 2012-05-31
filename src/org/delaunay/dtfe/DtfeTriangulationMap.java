@@ -17,13 +17,7 @@ import com.google.common.base.Function;
  * 
  * @param <T> a model that implements the DensityModel interface
  */
-public class DtfeTriangulationMap<T extends DtfeTriangulationMap.DensityModel> extends TriangulationMap<T> {
-	public static interface DensityModel {
-		public double getDensity();
-		public void setDensity(double d);
-		public double getWeight();
-	}
-
+public class DtfeTriangulationMap<T extends DensityModel> extends TriangulationMap<T> {
 	public static enum ScaleType {
 		LINEAR, LOG;
 	}
@@ -40,6 +34,8 @@ public class DtfeTriangulationMap<T extends DtfeTriangulationMap.DensityModel> e
 	public double getDensity(Vertex v) {
 		T model = get(v);
 		if (model == null) {
+			return 0.0;
+		} else if (getTriangulation().neighborsSuperVertex(v)) {
 			return 0.0;
 		} else {
 			return model.getDensity();
@@ -102,7 +98,6 @@ public class DtfeTriangulationMap<T extends DtfeTriangulationMap.DensityModel> e
 		if (maxDensity == null) {
 			maxDensity = Utils.maxValue(getTriangulation().getVertices(),
 					new Function<Vertex, Double>() {
-						@Override
 						public Double apply(Vertex v) {
 							return getDensity(v);
 						}
@@ -118,7 +113,7 @@ public class DtfeTriangulationMap<T extends DtfeTriangulationMap.DensityModel> e
 	public double getRelativeDensity(double d, ScaleType scaleType) {
 		if(d == 0) return 0;
 		return scaleType == ScaleType.LOG ?
-				Math.log10(d) / Math.log10(getMaxDensity()) :
+				Math.log10(1 + d) / Math.log10(1 + getMaxDensity()) :
 				d / getMaxDensity();
 	}
 

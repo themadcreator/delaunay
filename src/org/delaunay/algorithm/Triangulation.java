@@ -84,7 +84,6 @@ public class Triangulation {
 
 	public List<Vertex> getVerticesInBounds(final Rectangle2D rect) {
 		return Lists.newArrayList(Iterables.filter(getVertices(), new Predicate<Vertex>() {
-			@Override
 			public boolean apply(Vertex v) {
 				return rect.contains(v.toPoint());
 			}
@@ -212,7 +211,6 @@ public class Triangulation {
 		}
 		List<Vertex> sortedVertices = Lists.newArrayList(verts);
 		Collections.sort(sortedVertices, new Comparator<Vertex>() {
-			@Override
 			public int compare(Vertex v1, Vertex v2) {
 				return v1.getHilbertIndex().compareTo(v2.getHilbertIndex());
 			}
@@ -295,12 +293,24 @@ public class Triangulation {
 		removeTriangles(touching);
 		superVerts = new Vertex[] {};
 	}
-	
+
 	public boolean touchesSuperVertex(Triangle tri) {
 		for (Vertex v : superVerts) {
 			if (tri.getVertices().contains(v)) {
 				return true;
 			}
+		}
+		return false;
+	}
+	
+	public boolean neighborsSuperVertex(Vertex vert) {
+		for (Triangle tri : vert.getNeighborTriangles()) {
+			if (touchesSuperVertex(tri)) {
+				return true;
+			}
+		}
+		if (Sets.newHashSet(superVerts).contains(vert)) {
+			return true;
 		}
 		return false;
 	}
@@ -400,7 +410,6 @@ public class Triangulation {
 
 	private List<Triangle> createTriangles(Iterable<Edge> edgeSet, final Vertex vertex) {
 		return Lists.newArrayList(Iterables.transform(edgeSet, new Function<Edge, Triangle>() {
-			@Override
 			public Triangle apply(Edge e) {
 				return new Triangle(vertex, e.a, e.b);
 			}

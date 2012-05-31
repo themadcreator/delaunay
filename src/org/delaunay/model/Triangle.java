@@ -108,7 +108,7 @@ public class Triangle {
 		return edges;
 	}
 	
-	Double area = null;
+	private Double area = null;
 	
 	public double getArea() {
 		if (area == null) {
@@ -116,18 +116,4 @@ public class Triangle {
 		}
 		return area;
 	}
-	
-//    # Tests this triangle to see if it satisfies the delaunay criteria
-//    # for its neighbors' vertices
-//    def delaunay?
-//      neighbor_verts = Set.new
-//      neighbors.each do |n|
-//        neighbor_verts.merge(n.vertices)
-//      end
-//      neighbor_verts.subtract(vertices)
-//      neighbor_verts.each do |v|
-//        return false if(in_circum?(v))
-//      end
-//      return true
-//    end
 }
