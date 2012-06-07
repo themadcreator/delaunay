@@ -1,4 +1,4 @@
-package org.delaunay.algorithm;
+package org.delaunay;
 
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
@@ -22,7 +22,16 @@ public class Utils {
 		if (map.isEmpty()) {
 			return 0.0;
 		}
-		return map.lastEntry().getKey();
+		return map.lastKey();
+	}
+
+
+	public static <T> double minValue(Iterable<T> values, Function<? super T, Double> valueFunction) {
+		TreeMap<Double, T> map = valueMap(values, valueFunction);
+		if (map.isEmpty()) {
+			return 0.0;
+		}
+		return map.firstKey();
 	}
 
 	public static <T> T maxObject(Iterable<T> values, Function<? super T, Double> valueFunction) {
