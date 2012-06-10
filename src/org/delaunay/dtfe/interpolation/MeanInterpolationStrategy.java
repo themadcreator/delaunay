@@ -6,7 +6,7 @@ import org.delaunay.model.Triangle;
 import org.delaunay.model.Vector;
 import org.delaunay.model.Vertex;
 
-public class MeanInterpolationStrategy {
+public class MeanInterpolationStrategy implements InterpolationStrategy {
 	public double getDensity(DtfeTriangulationMap<? extends DensityModel> dtfe, Vector v) {
 		Triangle tri = dtfe.getTriangulation().locate(v);
 

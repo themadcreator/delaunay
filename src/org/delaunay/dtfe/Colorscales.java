@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
-public class Colorscales {
+public class ColorScales {
 
 	public static final ColorScale MODIFIED_RAINBOW = new ColorScale()
 			.stopAlpha(Color.HSBtoRGB(0.0f, 0.6f, 1.0f), 0x00, 0.1)
