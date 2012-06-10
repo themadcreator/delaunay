@@ -46,3 +46,6 @@ The DTFE is simple to understand:
 3. To reconstruct the continuous field, interpolate the density using the vertex densities.
 
 There are several methods for interpolation, which are included in the `InterpolationStrategies` class.
+
+For more info and **PICTURES!** check out this wiki page:
+(https://github.com/themadcreator/delaunay/wiki/DTFE-Interpolation-Strategies)
