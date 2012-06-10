@@ -1,6 +1,5 @@
 package org.delaunay.dtfe.interpolation;
 
-import org.delaunay.algorithm.Triangulation;
 
 public class InterpolationStrategies {
 	public static BarycentricLinearInterpolationStrategy createBarycentricLinear() {
@@ -19,7 +18,7 @@ public class InterpolationStrategies {
 		return new MeanInterpolationStrategy();
 	}
 
-	public static NaturalNeighborInterpolationStrategy createNaturalNeighbor(Triangulation triangulation) {
-		return new NaturalNeighborInterpolationStrategy(triangulation);
+	public static NaturalNeighborInterpolationStrategy createNaturalNeighbor() {
+		return new NaturalNeighborInterpolationStrategy();
 	}
 }

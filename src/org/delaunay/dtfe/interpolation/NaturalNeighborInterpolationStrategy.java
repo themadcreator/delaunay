@@ -19,11 +19,9 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 public class NaturalNeighborInterpolationStrategy implements InterpolationStrategy {
-	private final Triangulation triangulation;
 	private final Map<Vertex, Voronoi> voronoi;
 
-	public NaturalNeighborInterpolationStrategy(Triangulation triangulation) {
-		this.triangulation = triangulation;
+	public NaturalNeighborInterpolationStrategy() {
 		this.voronoi = Maps.newLinkedHashMap();
 	}
 
@@ -37,7 +35,7 @@ public class NaturalNeighborInterpolationStrategy implements InterpolationStrate
 		return cell;
 	}
 
-	public Voronoi getSecondOrderVoronoi(Vertex v) throws NonDelaunayException, InvalidVertexException {
+	public Voronoi getSecondOrderVoronoi(Triangulation triangulation, Vertex v) throws NonDelaunayException, InvalidVertexException {
 		Collection<Triangle> cavity = triangulation.getCircumcircleTriangles(v);
 		List<Triangle> tris = triangulation.createTriangles(triangulation.getEdgeSet(cavity), v);
 		Set<Vertex> verts = Sets.newHashSet();
@@ -49,13 +47,13 @@ public class NaturalNeighborInterpolationStrategy implements InterpolationStrate
 	}
 
 	public double getDensity(DtfeTriangulationMap<? extends DensityModel> dtfe, Vector v) {
-		Triangle tri = triangulation.locate(v);
-		if (tri == null || triangulation.touchesSuperVertex(tri)) {
+		Triangle tri = dtfe.getTriangulation().locate(v);
+		if (tri == null || dtfe.getTriangulation().touchesSuperVertex(tri)) {
 			return 0.0;
 		}
 
 		try {
-			Voronoi vor = getSecondOrderVoronoi(new Vertex(v.x, v.y));
+			Voronoi vor = getSecondOrderVoronoi(dtfe.getTriangulation(), new Vertex(v.x, v.y));
 			if (vor == null) {
 				return 0;
 			}

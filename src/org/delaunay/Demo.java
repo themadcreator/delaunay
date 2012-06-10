@@ -66,7 +66,7 @@ public class Demo {
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, w, h);
 
-		InterpolationStrategy interp = InterpolationStrategies.createNaturalNeighbor(dtfe.getTriangulation());
+		InterpolationStrategy interp = InterpolationStrategies.createNaturalNeighbor();
 		for (int y = 0; y < h; y++) {
 			double[] scanline = new double[w];
 			for (int x = 0; x < w; x++) {
