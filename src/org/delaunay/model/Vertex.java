@@ -26,7 +26,7 @@ public class Vertex extends Vector {
 		neighborVertices.addAll(tri.getVertices());
 		neighborVertices.remove(this);
 		for (Triangle t : neighborTriangles) {
-			t.invalidateOpposites();
+			t.invalidateNeighbors();
 		}
 	}
 
@@ -34,7 +34,7 @@ public class Vertex extends Vector {
 		neighborTriangles.remove(tri);
 		neighborVertices.removeAll(tri.getVertices());
 		for (Triangle t : neighborTriangles) {
-			t.invalidateOpposites();
+			t.invalidateNeighbors();
 		}
 	}
 

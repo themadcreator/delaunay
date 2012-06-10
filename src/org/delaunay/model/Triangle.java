@@ -82,29 +82,37 @@ public class Triangle {
 	private Triangle oppositeAB = null;
 	private Triangle oppositeBC = null;
 	private Triangle oppositeCA = null;
-	private boolean valid = false;
+	private boolean oppositesValid = false;
 
 	private void validateOpposites() {
-		if (valid) {
+		if (oppositesValid) {
 			return;
 		}
 		oppositeAB = opposite(a, b);
 		oppositeBC = opposite(b, c);
 		oppositeCA = opposite(c, a);
-		valid = true;
+		oppositesValid = true;
 	}
 
-	public void invalidateOpposites() {
-		valid = false;
+	public void invalidateNeighbors() {
+		oppositesValid = false;
+		neighborsValid = false;
 	}
+
+	private Set<Triangle> neighbors = null;
+	private boolean neighborsValid = false;
 
 	public Set<Triangle> getNeighbors() {
-		Set<Triangle> set = Sets.newHashSet();
-		set.addAll(a.getNeighborTriangles());
-		set.addAll(b.getNeighborTriangles());
-		set.addAll(c.getNeighborTriangles());
-		set.remove(this);
-		return set;
+		if (neighborsValid) {
+			return neighbors;
+		}
+		neighbors = Sets.newHashSet();
+		neighbors.addAll(a.getNeighborTriangles());
+		neighbors.addAll(b.getNeighborTriangles());
+		neighbors.addAll(c.getNeighborTriangles());
+		neighbors.remove(this);
+		neighborsValid = true;
+		return neighbors;
 	}
 
 	public Iterable<Edge> getEdges() {

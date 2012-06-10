@@ -22,17 +22,20 @@ public class ConvexPolygon {
 			return area;
 		}
 		area = 0.0;
-		Vector c = vertices.get(0);
+		
+		if(vertices.size() > 0){
+			Vector c = vertices.get(0);
 
-		for (int i = 1; i < vertices.size(); i++) {
-			// compute area of triangle defined by vectors a, b, c
-			Vector a = vertices.get(i - 1);
-			Vector b = vertices.get(i);
-			if (c == a) {
-				continue;
+			for (int i = 1; i < vertices.size(); i++) {
+				// compute area of triangle defined by vectors a, b, c
+				Vector a = vertices.get(i - 1);
+				Vector b = vertices.get(i);
+				if (c == a) {
+					continue;
+				}
+
+				area += Math.abs(a.x * (b.y - c.y) + b.x * (c.y - a.y) + c.x * (a.y - b.y)) / 2.0;
 			}
-
-			area += Math.abs(a.x * (b.y - c.y) + b.x * (c.y - a.y) + c.x * (a.y - b.y)) / 2.0;
 		}
 		return area;
 	}
