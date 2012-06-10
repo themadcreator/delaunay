@@ -22,7 +22,8 @@ import org.delaunay.dtfe.Colorscales;
 import org.delaunay.dtfe.DensityModel;
 import org.delaunay.dtfe.DtfeTriangulationMap;
 import org.delaunay.dtfe.DtfeTriangulationMap.ScaleType;
-import org.delaunay.dtfe.InterpolationStrategies;
+import org.delaunay.dtfe.interpolation.InterpolationStrategies;
+import org.delaunay.dtfe.interpolation.InterpolationStrategy;
 import org.delaunay.model.Edge;
 import org.delaunay.model.Triangle;
 import org.delaunay.model.Vector;
@@ -65,12 +66,11 @@ public class Demo {
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, w, h);
 
+		InterpolationStrategy interp = InterpolationStrategies.createNaturalNeighbor(dtfe.getTriangulation());
 		for (int y = 0; y < h; y++) {
 			double[] scanline = new double[w];
 			for (int x = 0; x < w; x++) {
-				scanline[x] = scalar * dtfe.getInterpolatedDensity(
-						new Vector(x, y),
-						InterpolationStrategies.BARYCENTRIC_LINEAR);
+				scanline[x] = scalar * dtfe.getInterpolatedDensity(new Vector(x, y), interp);
 			}
 			int[] rgb = new int[w];
 			for (int x = 0; x < w; x++) {
@@ -78,7 +78,7 @@ public class Demo {
 				rgb[x] = colorScale.get(scale).getRGB();
 			}
 			img.setRGB(0, y, w, 1, rgb, 0, w);
-		}
+		}	
 		
 		g.setColor(new Color(0x0A000000, true));
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);

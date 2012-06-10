@@ -57,8 +57,8 @@ public class Vector {
 	 *    0 = on
 	 *    1 = right
 	 */
-	public int orientation(Vector a, Vector b){
-		double det = (a.x - x) * (b.y - y) - (b.x - x) *(a.y - y);
+	public int orientation(Vector a, Vector b) {
+		double det = (a.x - x) * (b.y - y) - (b.x - x) * (a.y - y);
 		return (new Double(det).compareTo(0.0));
 	}
 	

@@ -5,12 +5,16 @@ import java.util.Set;
 import com.google.common.collect.Sets;
 
 public class Vertex extends Vector {
-	private final Set<Vector> neighborVertices = Sets.newLinkedHashSet();
+	private final Set<Vertex> neighborVertices = Sets.newLinkedHashSet();
 	private final Set<Triangle> neighborTriangles = Sets.newLinkedHashSet();
 	private Integer hilbertIndex;
 
 	public Vertex(double x, double y) {
 		super(x, y);
+	}
+	
+	public Set<Vertex> getNeighborVertices() {
+		return neighborVertices;
 	}
 	
 	public Set<Triangle> getNeighborTriangles() {

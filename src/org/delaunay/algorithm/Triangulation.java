@@ -319,7 +319,7 @@ public class Triangulation {
 		lastLocatedTriangle = null;
 	}
 
-	private Collection<Triangle> getCircumcircleTriangles(Vertex vertex) throws InvalidVertexException, NonDelaunayException {
+	public Collection<Triangle> getCircumcircleTriangles(Vector vertex) throws InvalidVertexException, NonDelaunayException {
 		Triangle t = locate(vertex);
 		if (t == null) {
 			throw new InvalidVertexException();
@@ -340,7 +340,8 @@ public class Triangulation {
 			if (t.isInCircum(vertex)) {
 				inCircum.add(t);
 				// If it is, add *its* neighbors to the "to check" set.
-				toCheck.addAll(Sets.difference(t.getNeighbors(), checked));
+				toCheck.addAll(t.getNeighbors());
+				toCheck.removeAll(checked);
 			}
 			checked.add(t);
 		}
@@ -394,7 +395,7 @@ public class Triangulation {
 		return t;
 	}
 
-	private List<Edge> getEdgeSet(Collection<Triangle> tris) {
+	public List<Edge> getEdgeSet(Collection<Triangle> tris) {
 		List<Edge> edges = Lists.newArrayList();
 		for (Triangle t : tris) {
 			for (Edge e : t.getEdges()) {
@@ -408,7 +409,7 @@ public class Triangulation {
 		return edges;
 	}
 
-	private List<Triangle> createTriangles(Iterable<Edge> edgeSet, final Vertex vertex) {
+	public List<Triangle> createTriangles(Iterable<Edge> edgeSet, final Vertex vertex) {
 		return Lists.newArrayList(Iterables.transform(edgeSet, new Function<Edge, Triangle>() {
 			public Triangle apply(Edge e) {
 				return new Triangle(vertex, e.a, e.b);

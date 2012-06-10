@@ -4,7 +4,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
@@ -45,6 +44,10 @@ public class Triangle {
 
 	public LinkedHashSet<Vertex> getVertices() {
 		return vertices;
+	}
+	
+	public Vector getCircumCenter() {
+		return circumCenter;
 	}
 	
 	public boolean isInCircum(Vector v){

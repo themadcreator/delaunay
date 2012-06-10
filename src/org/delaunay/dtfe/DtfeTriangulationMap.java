@@ -2,6 +2,7 @@ package org.delaunay.dtfe;
 
 import org.delaunay.Utils;
 import org.delaunay.algorithm.Triangulation.InvalidVertexException;
+import org.delaunay.dtfe.interpolation.InterpolationStrategy;
 import org.delaunay.model.Triangle;
 import org.delaunay.model.TriangulationMap;
 import org.delaunay.model.Vector;
