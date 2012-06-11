@@ -1,17 +1,16 @@
 package org.delaunay.model;
 
-import java.util.Map;
-
 import org.delaunay.algorithm.Triangulation;
 import org.delaunay.algorithm.Triangulation.InvalidVertexException;
 
-import com.google.common.collect.Maps;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 
 /**
  * A map that stores the models on vertices of a Delaunay Triangulation.
  */
 public class TriangulationMap<T> {
-	private final Map<Vertex, T> map = Maps.newLinkedHashMap();
+	private final BiMap<Vertex, T> map = HashBiMap.create();
 	private final Triangulation triangulation = new Triangulation();
 
 	public TriangulationMap() {
@@ -27,9 +26,10 @@ public class TriangulationMap<T> {
 		return map.containsKey(new Vertex(x, y));
 	}
 
-	public void put(double x, double y, T value) {
+	public Vertex put(double x, double y, T value) {
 		Vertex vert = new Vertex(x, y);
 		map.put(vert, value);
+		return vert;
 	}
 
 	public void triangulate() throws InvalidVertexException {
@@ -38,6 +38,10 @@ public class TriangulationMap<T> {
 	
 	public Triangulation getTriangulation() {
 		return triangulation;
+	}
+	
+	public Vertex getVertex(T value){
+		return map.inverse().get(value);
 	}
 
 	public T get(Vertex v) {

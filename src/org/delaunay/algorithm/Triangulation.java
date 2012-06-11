@@ -120,6 +120,26 @@ public class Triangulation {
 		}
 		return bestVertex;
 	}
+	
+	public Set<Vertex> getVerticesInRadius(Vertex v, double radius) {
+		Set<Vertex> checked = Sets.newHashSet(v);
+		Set<Vertex> inRadius = Sets.newHashSet(v);
+		Set<Vertex> toCheck = Sets.newHashSet(v.getNeighborVertices());
+
+		while (toCheck.size() > 0) {
+			Vertex check = Iterables.getFirst(toCheck, null);
+			toCheck.remove(check);
+			checked.add(check);
+
+			if (v.subtract(check).length() < radius) {
+				inRadius.add(check);
+				toCheck.addAll(check.getNeighborVertices());
+				toCheck.removeAll(checked);
+			}
+		}
+
+		return inRadius;
+	}
 
 	/**
 	 * Creates a Delaunay Triangulation of the {@link Vertex}s.
