@@ -5,9 +5,10 @@ Delaunay Triangulation for Java with Hilbert Curve linearization and a Delaunay 
 
 ### Three line demo ###
 ```Java
-	public static void threeLiner() throws Exception {
+	public static void fourLiner() throws Exception {
 		Triangulation t = new Triangulation();
-		t.triangulate(Triangulations.randomVertices(1000, 400, 400));
+		t.addAllVertices(Triangulations.randomVertices(1000, 400, 400));
+		t.triangulate();
 		Demo.drawTriangulation(t, 400, 400, "triangulation.png");
 	}
 ```

@@ -54,7 +54,7 @@ public class Demo {
 		ImageIO.write(img, "png", new File(filename));
 	}
 	
-	public static void threeLiner() throws Exception {
+	public static void fourLiner() throws Exception {
 		Triangulation t = new Triangulation();
 		t.addAllVertices(Triangulations.randomVertices(1000, 400, 400));
 		t.triangulate();
