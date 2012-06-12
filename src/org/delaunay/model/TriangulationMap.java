@@ -28,12 +28,13 @@ public class TriangulationMap<T> {
 
 	public Vertex put(double x, double y, T value) {
 		Vertex vert = new Vertex(x, y);
+		triangulation.addVertex(vert);
 		map.put(vert, value);
 		return vert;
 	}
 
 	public void triangulate() throws InvalidVertexException {
-		triangulation.triangulate(map.keySet());
+		triangulation.triangulate();
 	}
 	
 	public Triangulation getTriangulation() {

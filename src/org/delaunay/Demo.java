@@ -5,7 +5,6 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
@@ -57,28 +56,25 @@ public class Demo {
 	
 	public static void threeLiner() throws Exception {
 		Triangulation t = new Triangulation();
-		t.triangulate(Triangulations.randomVertices(1000, 400, 400));
+		t.addAllVertices(Triangulations.randomVertices(1000, 400, 400));
+		t.triangulate();
 		Demo.drawTriangulation(t, 400, 400, "triangulation.png");
 	}
 
 	public static void createTriangulationAndDtfeDemo() throws InvalidVertexException, IOException {
 		// Generate vertices
-		long start = System.nanoTime();
-		int n = 10000;
-		List<Vertex> verts = Triangulations.randomVertices(n, WIDTH, HEIGHT);
-		System.out.println(String.format("Time to create %,d vertices: %d msec.", n,
-				TimeUnit.MILLISECONDS.convert(System.nanoTime() - start, TimeUnit.NANOSECONDS)));
 		
 		// Triangulate
-		start = System.nanoTime();
+		long start = System.nanoTime();
 		Triangulation t = new Triangulation();
+		t.addAllVertices(Triangulations.randomVertices(10000, WIDTH, HEIGHT));
 		t.setDebugLogger(new DebugLogger() {
 			public void debug(String str) {
 				System.out.println(str);
 			}
 		});
-		t.triangulate(verts);
-		System.out.println(String.format("Time to triangulate %,d vertices: %d msec.", n,
+		t.triangulate();
+		System.out.println(String.format("Time to triangulate %,d vertices: %d msec.", 10000,
 				TimeUnit.MILLISECONDS.convert(System.nanoTime() - start, TimeUnit.NANOSECONDS)));
 		System.out.println(String.format("Average hops per locate: %.2f", (float)t.getHopCount() / t.getLocateCount()));
 

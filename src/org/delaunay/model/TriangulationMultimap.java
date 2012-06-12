@@ -40,6 +40,7 @@ public class TriangulationMultimap<T> {
 		if (canonicalKeys.containsKey(vert)) {
 			vert = canonicalKeys.get(vert);
 		} else {
+			triangulation.addVertex(vert);
 			canonicalKeys.put(vert, vert);
 		}
 		map.put(vert, value);
@@ -55,7 +56,7 @@ public class TriangulationMultimap<T> {
 	}
 
 	public void triangulate() throws InvalidVertexException {
-		triangulation.triangulate(map.keySet());
+		triangulation.triangulate();
 	}
 
 	public List<T> locate(double x, double y) {

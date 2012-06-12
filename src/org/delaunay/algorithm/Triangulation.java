@@ -38,6 +38,7 @@ public class Triangulation {
 	
 	private Vertex[] superVerts = new Vertex[]{};
 	private LinkedHashSet<Triangle> triangles = Sets.newLinkedHashSet();
+	private LinkedHashSet<Vertex> inputVertices = Sets.newLinkedHashSet();
 	private LinkedHashSet<Vertex> vertices = Sets.newLinkedHashSet();
 	private Triangle lastLocatedTriangle = null;
 	private int hopCount = 0;
@@ -76,6 +77,24 @@ public class Triangulation {
 
 	public void setDebugLogger(DebugLogger log) {
 		this.log = log;
+	}
+
+	public Vertex addVertex(double x, double y) {
+		Vertex vertex = new Vertex(x, y);
+		inputVertices.add(vertex);
+		return vertex;
+	}
+
+	public void addVertex(Vertex v) {
+		inputVertices.add(v);
+	}
+
+	public void addAllVertices(Iterable<Vertex> vs) {
+		Iterables.addAll(inputVertices, vs);
+	}
+
+	public LinkedHashSet<Vertex> getInputVertices() {
+		return inputVertices;
 	}
 	
 	public LinkedHashSet<Vertex> getVertices() {
@@ -176,34 +195,34 @@ public class Triangulation {
 	 *             if any two vertices have the same location or if any three
 	 *             points are co-linear.
 	 */
-    public void triangulate(Iterable<? extends Vertex> verts) throws InvalidVertexException {
+    public void triangulate() throws InvalidVertexException {
     	/*
     	 * Reset triangulation state
     	 */
-		clear();
+    	resetTriangulation();
 		
-		if (Iterables.isEmpty(verts)) {
+		if (Iterables.isEmpty(inputVertices)) {
 			return;
 		}
 
 		/*
 		 * Determine the supertriangle.
 		 */
-		createSuperTriangle(verts);
+		createSuperTriangle(inputVertices);
 
 		/*
 		 * Sort vertices using hilbert curve to linearize triangulation
 		 * performance.
 		 */
 		log.debug("Linearizing with Hilbert Space-filling Curve");
-		List<Vertex> sortedVertices = getHilbertSortedVertices(verts);
+		List<Vertex> sortedVertices = getHilbertSortedVertices(inputVertices);
 
 		/*
 		 * Add vertices one at a time, updating the triangulation as we go.
 		 */
 		log.debug("Building Triangulation");
 		for (int i = 0; i < sortedVertices.size(); i++) {
-			addVertex(sortedVertices.get(i));
+			addVertexToTriangulation(sortedVertices.get(i));
 		}
 		
 		/*
@@ -218,6 +237,11 @@ public class Triangulation {
 	}
 
 	public void clear() {
+		resetTriangulation();
+		inputVertices = Sets.newLinkedHashSet();
+	}
+	
+	private void resetTriangulation() {
 		triangles = Sets.newLinkedHashSet();
 		vertices = Sets.newLinkedHashSet();
 		clearLocator();
@@ -238,7 +262,7 @@ public class Triangulation {
 		return sortedVertices;
 	}
 
-	public void addVertex(Vertex vertex) throws InvalidVertexException {
+	public void addVertexToTriangulation(Vertex vertex) throws InvalidVertexException {
 		Collection<Triangle> toRemove = null, toAdd = null;
 
 		try {
