@@ -31,8 +31,17 @@
 			</fileset>
 		</unzip>
 	</target>
-
-	<target name="build" depends="compile,unjar_deps">
+	
+	<target name="copy_deps" depends="compile">
+		<mkdir dir="${dist.dir}" />
+		<copy todir="${dist.dir}">
+			<fileset dir="${lib.dir}">
+				<include name="**/*.jar" />
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="build" depends="compile,copy_deps">
 		<mkdir dir="${dist.dir}" />
 		<jar destfile="${dist.dir}/delaunay.jar" duplicate="preserve">
 			<manifest>

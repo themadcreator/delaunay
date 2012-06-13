@@ -21,21 +21,29 @@ public class Voronoi extends ConvexPolygon {
 			Iterable<Triangle> neighborTriangles) {
 		
 		// Sort neighbors.
-		// TODO For some reason, sorting a list was not working, so we use a treeset
 		Comparator<Vertex> comp = new Comparator<Vertex>() {
 			public int compare(Vertex o1, Vertex o2) {
 				return o2.orientation(o1, vert);
 			}
 		};
 		TreeSet<Vertex> sortedSet = Sets.newTreeSet(comp);
-		sortedSet.addAll(Lists.newArrayList(neighborVertices));
+		List<Vertex> vertsList = Lists.newArrayList(neighborVertices);
+		sortedSet.addAll(vertsList);
 		List<Vertex> sortedNeighbors = Lists.newArrayList(sortedSet);
+		
+		// TODO For some reason, sorting a list was not working, so we use a treeset
+		// Uncomment the following to debug
+//		Collections.sort(vertsList, comp);
+//		if(!vertsList.equals(sortedNeighbors)){
+//			System.out.println(vertsList);
+//			System.out.println(sortedNeighbors);
+//		}
 
 		// Connect circum-centers
 		List<Vector> vertices = Lists.newArrayList();
 		for (int i = 0; i < sortedNeighbors.size(); i++) {
-			final Vector a = i == 0 ? sortedNeighbors.get(sortedNeighbors.size() - 1) : sortedNeighbors.get(i - 1);
-			final Vector b = sortedNeighbors.get(i);
+			final Vertex a = i == 0 ? sortedNeighbors.get(sortedNeighbors.size() - 1) : sortedNeighbors.get(i - 1);
+			final Vertex b = sortedNeighbors.get(i);
 			Triangle t = Iterables.getFirst(Iterables.filter(neighborTriangles,
 					new Predicate<Triangle>() {
 						public boolean apply(Triangle t) {
@@ -44,8 +52,12 @@ public class Voronoi extends ConvexPolygon {
 					}), null);
 			if (t == null) {
 				continue;
-				// TODO this shouldn't be happening, debug this.
-				// We appear to be getting an extra vertex? Are we missing a neighbor triangle?
+				/*
+				 * This typically occurs when the cell is outside the convex
+				 * hull of the input vertices or on the border. Note that this
+				 * may be an error, but we do not throw an exception because we
+				 * want to produce a best-effort cell.
+				 */
 			}
 			vertices.add(t.getCircumCenter());
 		}

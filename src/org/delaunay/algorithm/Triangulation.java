@@ -36,13 +36,21 @@ public strictfp class Triangulation {
 		public void debug(String str);
 	}
 	
+	public static enum VertexExceptionStrategy{
+		THROW_EXCEPTION,
+		CATCH_AND_DROP_VERTEX,
+		;
+	}
+	
 	private Vertex[] superVerts = new Vertex[]{};
 	private LinkedHashSet<Triangle> triangles = Sets.newLinkedHashSet();
+	private LinkedHashSet<Vertex> inputVertices = Sets.newLinkedHashSet();
 	private LinkedHashSet<Vertex> vertices = Sets.newLinkedHashSet();
 	private Triangle lastLocatedTriangle = null;
 	private int hopCount = 0;
 	private int locateCount = 0;
 	private boolean keepSuperTriangle = false;
+	private VertexExceptionStrategy vertexExceptionStrategy = VertexExceptionStrategy.THROW_EXCEPTION; 
 
 	/*
 	 * The hilbert order determines the granularity of the hilbert curve. For
@@ -76,6 +84,24 @@ public strictfp class Triangulation {
 
 	public void setDebugLogger(DebugLogger log) {
 		this.log = log;
+	}
+
+	public Vertex addVertex(double x, double y) {
+		Vertex vertex = new Vertex(x, y);
+		inputVertices.add(vertex);
+		return vertex;
+	}
+
+	public void addVertex(Vertex v) {
+		inputVertices.add(v);
+	}
+
+	public void addAllVertices(Iterable<Vertex> vs) {
+		Iterables.addAll(inputVertices, vs);
+	}
+
+	public LinkedHashSet<Vertex> getInputVertices() {
+		return inputVertices;
 	}
 	
 	public LinkedHashSet<Vertex> getVertices() {
@@ -120,6 +146,26 @@ public strictfp class Triangulation {
 		}
 		return bestVertex;
 	}
+	
+	public Set<Vertex> getVerticesInRadius(Vertex v, double radius) {
+		Set<Vertex> checked = Sets.newHashSet(v);
+		Set<Vertex> inRadius = Sets.newHashSet(v);
+		Set<Vertex> toCheck = Sets.newHashSet(v.getNeighborVertices());
+
+		while (toCheck.size() > 0) {
+			Vertex check = Iterables.getFirst(toCheck, null);
+			toCheck.remove(check);
+			checked.add(check);
+
+			if (v.subtract(check).length() < radius) {
+				inRadius.add(check);
+				toCheck.addAll(check.getNeighborVertices());
+				toCheck.removeAll(checked);
+			}
+		}
+
+		return inRadius;
+	}
 
 	/**
 	 * Creates a Delaunay Triangulation of the {@link Vertex}s.
@@ -156,37 +202,41 @@ public strictfp class Triangulation {
 	 *             if any two vertices have the same location or if any three
 	 *             points are co-linear.
 	 */
-    public void triangulate(Iterable<? extends Vertex> verts) throws InvalidVertexException {
+    public void triangulate() throws InvalidVertexException {
     	/*
     	 * Reset triangulation state
     	 */
-		clear();
+    	resetTriangulation();
 		
-		if (Iterables.isEmpty(verts)) {
+		if (Iterables.isEmpty(inputVertices)) {
 			return;
 		}
 
 		/*
 		 * Determine the supertriangle.
 		 */
-		createSuperTriangle(verts);
+		createSuperTriangle(inputVertices);
 
 		/*
 		 * Sort vertices using hilbert curve to linearize triangulation
 		 * performance.
 		 */
 		log.debug("Linearizing with Hilbert Space-filling Curve");
-		List<Vertex> sortedVertices = getHilbertSortedVertices(verts);
+		List<Vertex> sortedVertices = getHilbertSortedVertices(inputVertices);
 
 		/*
 		 * Add vertices one at a time, updating the triangulation as we go.
 		 */
 		log.debug("Building Triangulation");
-		for (int i = 0; i < sortedVertices.size(); i++) {
+		for (Vertex vertex : sortedVertices) {
 			try {
-				addVertex(sortedVertices.get(i));
+				addVertexToTriangulation(vertex);
 			} catch (InvalidVertexException e) {
-				// igore
+				if (vertexExceptionStrategy == VertexExceptionStrategy.THROW_EXCEPTION) {
+					throw e;
+				} else {
+					// ignore
+				}
 			}
 		}
 		
@@ -202,6 +252,11 @@ public strictfp class Triangulation {
 	}
 
 	public void clear() {
+		resetTriangulation();
+		inputVertices = Sets.newLinkedHashSet();
+	}
+	
+	private void resetTriangulation() {
 		triangles = Sets.newLinkedHashSet();
 		vertices = Sets.newLinkedHashSet();
 		clearLocator();
@@ -222,7 +277,7 @@ public strictfp class Triangulation {
 		return sortedVertices;
 	}
 
-	public void addVertex(Vertex vertex) throws InvalidVertexException {
+	public void addVertexToTriangulation(Vertex vertex) throws InvalidVertexException {
 		Collection<Triangle> toRemove = null, toAdd = null;
 
 		try {
