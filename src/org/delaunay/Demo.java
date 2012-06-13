@@ -21,6 +21,7 @@ import org.delaunay.dtfe.DtfeTriangulationMap;
 import org.delaunay.dtfe.interpolation.InterpolationStrategies;
 import org.delaunay.dtfe.painters.DtfePainter;
 import org.delaunay.dtfe.painters.DtfePainterModel;
+import org.delaunay.dtfe.painters.PaintTransform;
 import org.delaunay.dtfe.painters.TriangulationPainter;
 import org.delaunay.dtfe.painters.TriangulationPainterModel;
 import org.delaunay.model.Vertex;
@@ -37,7 +38,7 @@ public class Demo {
 				.setEdgeStrokeWidth(1.5f));
 		
 		Rectangle rect = new Rectangle(0, 0, w, h);
-		BufferedImage img = painter.paint(t, rect.getSize(), rect);
+		BufferedImage img = painter.paint(t, new PaintTransform(w, h));
 		ImageIO.write(img, "png", new File(filename));
 	}
 
@@ -50,8 +51,7 @@ public class Demo {
 							.setEdgeColor(new Color(0x10000000, true))
 							.setColorScale(ColorScales.PURPLE_TO_GREEN_LINEAR));
 		
-		Rectangle rect = new Rectangle(0, 0, w, h);
-		BufferedImage img = painter.paint(dtfe, rect.getSize(), rect);
+		BufferedImage img = painter.paint(dtfe, new PaintTransform(w, h));
 		ImageIO.write(img, "png", new File(filename));
 	}
 	

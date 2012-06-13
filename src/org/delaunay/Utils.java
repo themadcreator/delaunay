@@ -4,7 +4,10 @@ import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.util.TreeMap;
 
+import org.delaunay.model.Vector;
+
 import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 
 public class Utils {
@@ -61,6 +64,14 @@ public class Utils {
 			}
 		}
 		return map;
+	}
+
+	public static Iterable<Point2D> toPoints(Iterable<? extends Vector> vectors) {
+		return Iterables.transform(vectors, new Function<Vector, Point2D>() {
+			public Point2D apply(Vector vector) {
+				return new Point2D.Double(vector.x, vector.y);
+			}
+		});
 	}
 
 	public static Path2D pathFromPoints(Iterable<? extends Point2D> points) {

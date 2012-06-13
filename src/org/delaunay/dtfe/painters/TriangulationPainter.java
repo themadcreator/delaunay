@@ -1,9 +1,8 @@
 package org.delaunay.dtfe.painters;
 
 import java.awt.BasicStroke;
-import java.awt.Dimension;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
+import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.Set;
@@ -24,9 +23,8 @@ public class TriangulationPainter {
 
 	public BufferedImage paint(
 			Triangulation triangulation,
-			Dimension imageSize,
-			Rectangle bounds) {
-		BufferedImage img = new BufferedImage(imageSize.width, imageSize.height, BufferedImage.TYPE_4BYTE_ABGR);
+			PaintTransform transform) {
+		BufferedImage img = new BufferedImage(transform.getWidth(), transform.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
 		Graphics2D g = (Graphics2D) img.getGraphics();
 
 		// Draw Edges
@@ -36,11 +34,9 @@ public class TriangulationPainter {
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			
 			for (Edge e : getPaintableEdges(triangulation)) {
-				double ax = (e.a.x - bounds.getMinX()) * imageSize.width / bounds.getWidth();
-				double ay = (e.a.y - bounds.getMinY()) * imageSize.height / bounds.getHeight();
-				double bx = (e.b.x - bounds.getMinX()) * imageSize.width / bounds.getWidth();
-				double by = (e.b.y - bounds.getMinY()) * imageSize.height / bounds.getHeight();
-				g.drawLine((int) ax, (int) ay, (int) bx, (int) by);
+				Point a = transform.toImagePoint(e.a);
+				Point b = transform.toImagePoint(e.b);
+				g.drawLine(a.x, a.y, b.x, b.y);
 			}
 		}
 		return img;

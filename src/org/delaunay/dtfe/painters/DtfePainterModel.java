@@ -4,6 +4,7 @@ import java.awt.Color;
 
 import org.delaunay.dtfe.ColorScale;
 import org.delaunay.dtfe.ColorScales;
+import org.delaunay.dtfe.DtfeTriangulationMap.ScaleType;
 import org.delaunay.dtfe.interpolation.InterpolationStrategies;
 import org.delaunay.dtfe.interpolation.InterpolationStrategy;
 
@@ -13,6 +14,16 @@ public class DtfePainterModel {
 	private Color edgeColor = null;
 	private InterpolationStrategy interpolationStrategy = InterpolationStrategies.createNaturalNeighbor();
 	private float edgeStrokeWidth = 1.0f;
+	private ScaleType scaleType = ScaleType.LINEAR;
+
+	public ScaleType getScaleType() {
+		return scaleType;
+	}
+
+	public DtfePainterModel setScaleType(ScaleType scaleType) {
+		this.scaleType = scaleType;
+		return this;
+	}
 
 	public float getEdgeStrokeWidth() {
 		return edgeStrokeWidth;

@@ -2,7 +2,7 @@ package org.delaunay.model;
 
 import java.awt.geom.Point2D;
 
-public class Vector {
+public strictfp class Vector {
 	public final double x, y;
 
 	public Vector(double x, double y) {

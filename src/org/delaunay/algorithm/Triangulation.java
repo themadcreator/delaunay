@@ -24,7 +24,7 @@ import com.google.common.collect.Sets;
  * A fast Delaunay Triangulation implementation.
  */
 @SuppressWarnings("serial")
-public class Triangulation {
+public strictfp class Triangulation {
 
 	public static class NonDelaunayException extends RuntimeException {
 	}
@@ -183,7 +183,11 @@ public class Triangulation {
 		 */
 		log.debug("Building Triangulation");
 		for (int i = 0; i < sortedVertices.size(); i++) {
-			addVertex(sortedVertices.get(i));
+			try {
+				addVertex(sortedVertices.get(i));
+			} catch (InvalidVertexException e) {
+				// igore
+			}
 		}
 		
 		/*

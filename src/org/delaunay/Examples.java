@@ -6,6 +6,7 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 
@@ -16,6 +17,7 @@ import org.delaunay.dtfe.DtfeTriangulationMap;
 import org.delaunay.dtfe.interpolation.InterpolationStrategies;
 import org.delaunay.dtfe.painters.DtfePainter;
 import org.delaunay.dtfe.painters.DtfePainterModel;
+import org.delaunay.dtfe.painters.PaintTransform;
 import org.delaunay.dtfe.painters.TriangulationPainter;
 import org.delaunay.dtfe.painters.TriangulationPainterModel;
 import org.delaunay.model.Vertex;
@@ -31,14 +33,18 @@ public class Examples {
 			dtfe.put(v.x, v.y, new BasicDensityModel());
 		}
 		dtfe.triangulate();
+		
+		// Make sure we have dirs
+		new File("examples").mkdirs();
 
 		// Draw overall triangulation
+		long start = System.nanoTime();
 		BufferedImage img = new TriangulationPainter(new TriangulationPainterModel()
 				.setEdgeColor(Color.BLACK)
 				.setEdgeStrokeWidth(1.5f)).paint(
 						dtfe.getTriangulation(),
-						new Dimension(WIDTH, HEIGHT),
-						new Rectangle(0, 0, WIDTH, HEIGHT));
+						new PaintTransform(WIDTH, HEIGHT));
+		System.out.println(String.format("examples/dtfe_triangulation_full.png: %d msec.", TimeUnit.MILLISECONDS.convert(System.nanoTime() - start, TimeUnit.NANOSECONDS)));
 		ImageIO.write(img, "png", new File("examples/dtfe_triangulation_full.png"));
 
 		// Draw individual interpolations
@@ -60,10 +66,18 @@ public class Examples {
 		Rectangle fullRect = new Rectangle(0, 0, WIDTH, HEIGHT);
 		Rectangle zoomRect = new Rectangle(WIDTH / 2 + 50, HEIGHT / 2 - 100, 200, 200);
 
-		ImageIO.write(new DtfePainter(model).paint(dtfe, new Dimension(WIDTH, HEIGHT), fullRect),
-				"png", new File("examples/dtfe_interp_" + name + "_full.png"));
-		ImageIO.write(new DtfePainter(model).paint(dtfe, new Dimension(WIDTH, HEIGHT), zoomRect),
-				"png", new File("examples/dtfe_interp_" + name + "_zoom.png"));
+		long start = System.nanoTime();
+		String file0 = "examples/dtfe_interp_" + name + "_full.png";
+		ImageIO.write(new DtfePainter(model).paint(dtfe, new PaintTransform(WIDTH, HEIGHT, fullRect)),
+				"png", new File(file0));
+		System.out.println(String.format("%s: %d msec.", file0, TimeUnit.MILLISECONDS.convert(System.nanoTime() - start, TimeUnit.NANOSECONDS)));
+
+		start = System.nanoTime();
+		String file1 = "examples/dtfe_interp_" + name + "_zoom.png";
+		ImageIO.write(new DtfePainter(model).paint(dtfe, new PaintTransform(WIDTH, HEIGHT, zoomRect)),
+				"png", new File(file1));
+		System.out.println(String.format("%s: %d msec.", file1, TimeUnit.MILLISECONDS.convert(System.nanoTime() - start, TimeUnit.NANOSECONDS)));
+		
 	}
 
 	public static void main(String[] args) throws Exception {

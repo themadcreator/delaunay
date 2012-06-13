@@ -5,7 +5,7 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
-public class ConvexPolygon {
+public strictfp class ConvexPolygon {
 	private Double area = null;
 	private final List<Vector> vertices;
 

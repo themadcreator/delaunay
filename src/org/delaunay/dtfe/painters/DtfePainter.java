@@ -1,47 +1,60 @@
 package org.delaunay.dtfe.painters;
 
 import java.awt.BasicStroke;
-import java.awt.Dimension;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
+import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
 import org.delaunay.dtfe.DensityModel;
 import org.delaunay.dtfe.DtfeTriangulationMap;
-import org.delaunay.dtfe.DtfeTriangulationMap.ScaleType;
 import org.delaunay.model.Edge;
 import org.delaunay.model.Vector;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
+
 public class DtfePainter {
+
 	private final DtfePainterModel model;
 
 	public DtfePainter(DtfePainterModel model) {
 		this.model = model;
 	}
 
+	public Iterable<BufferedImage> paintSlices(
+			final DtfeTriangulationMap<? extends DensityModel> dtfe,
+			PaintTransform transform,
+			int slices) {
+
+		return Iterables.transform(transform.createSlices(slices),
+				new Function<PaintTransform, BufferedImage>() {
+					public BufferedImage apply(PaintTransform pattern) {
+						return paint(dtfe, pattern);
+					}
+				});
+	}
+
+
 	public BufferedImage paint(
 			DtfeTriangulationMap<? extends DensityModel> dtfe,
-			Dimension imageSize,
-			Rectangle bounds) {
-		BufferedImage img = new BufferedImage(imageSize.width, imageSize.height, BufferedImage.TYPE_4BYTE_ABGR);
+			PaintTransform transform) {
+		BufferedImage img = new BufferedImage(transform.getWidth(), transform.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
 		Graphics2D g = (Graphics2D) img.getGraphics();
 		
 		// Fill scanlines
-		for (int y = 0; y < imageSize.height; y++) {
-			double[] scanline = new double[imageSize.width];
-			for (int x = 0; x < imageSize.width; x++) {
-				Vector v = new Vector(
-						bounds.getMinX() + bounds.getWidth() * x / imageSize.width,
-						bounds.getMinY() + bounds.getHeight() * y / imageSize.height);
-				scanline[x] = model.getDensityScalar() * dtfe.getInterpolatedDensity(v, model.getInterpolationStrategy());
+		for (int y = 0; y < transform.getHeight(); y++) {
+			double[] scanline = new double[transform.getWidth()];
+			for (int x = 0; x < transform.getWidth(); x++) {
+				Vector v = transform.toDtfeVector(x, y);
+				scanline[x] = dtfe.getInterpolatedDensity(v, model.getInterpolationStrategy());
 			}
-			int[] rgb = new int[imageSize.width];
-			for (int x = 0; x < imageSize.width; x++) {
-				double scale = dtfe.getRelativeDensity(scanline[x], ScaleType.LINEAR);
+			int[] rgb = new int[transform.getWidth()];
+			for (int x = 0; x < transform.getWidth(); x++) {
+				double scale = model.getDensityScalar() * dtfe.getRelativeDensity(scanline[x], model.getScaleType());
 				rgb[x] = model.getColorScale().get(scale).getRGB();
 			}
-			img.setRGB(0, y, imageSize.width, 1, rgb, 0, imageSize.width);
+			img.setRGB(0, y, transform.getWidth(), 1, rgb, 0, transform.getWidth());
 		}	
 
 		// Draw Edges
@@ -51,11 +64,9 @@ public class DtfePainter {
 			g.setStroke(new BasicStroke(model.getEdgeStrokeWidth()));
 
 			for (Edge e : TriangulationPainter.getPaintableEdges(dtfe.getTriangulation())) {
-				double ax = (e.a.x - bounds.getMinX()) * imageSize.width / bounds.getWidth();
-				double ay = (e.a.y - bounds.getMinY()) * imageSize.height / bounds.getHeight();
-				double bx = (e.b.x - bounds.getMinX()) * imageSize.width / bounds.getWidth();
-				double by = (e.b.y - bounds.getMinY()) * imageSize.height / bounds.getHeight();
-				g.drawLine((int) ax, (int) ay, (int) bx, (int) by);
+				Point a = transform.toImagePoint(e.a);
+				Point b = transform.toImagePoint(e.b);
+				g.drawLine(a.x, a.y, b.x, b.y);
 			}
 		}
 		return img;

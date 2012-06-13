@@ -7,7 +7,7 @@ import java.util.Set;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-public class Triangle {
+public strictfp class Triangle {
 	
 	public final Vertex a, b, c;
 	private final Vector circumCenter;
