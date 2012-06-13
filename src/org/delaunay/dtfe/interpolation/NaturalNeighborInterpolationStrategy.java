@@ -54,11 +54,11 @@ public class NaturalNeighborInterpolationStrategy implements InterpolationStrate
 
 		try {
 			Voronoi vor = getSecondOrderVoronoi(dtfe.getTriangulation(), new Vertex(v.x, v.y));
-			if (vor == null) {
-				return 0;
-			}
 			double area = 0;
 			for (Vertex vert : vor.getNeighborVertices()) {
+				if (dtfe.getTriangulation().neighborsSuperVertex(vert)) {
+					continue;
+				}
 				Voronoi vertVor = getVoronoi(vert);
 				if (vertVor != null) {
 					area += vor.intersect(vertVor).getArea() * dtfe.getDensity(vert);
