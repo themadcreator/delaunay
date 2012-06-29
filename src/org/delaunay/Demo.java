@@ -1,7 +1,6 @@
 package org.delaunay;
 
 import java.awt.Color;
-import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -36,7 +35,6 @@ public class Demo {
 				.setEdgeColor(new Color(0x2222AA))
 				.setEdgeStrokeWidth(1.5f));
 		
-		Rectangle rect = new Rectangle(0, 0, w, h);
 		BufferedImage img = painter.paint(t, new PaintTransform(w, h));
 		ImageIO.write(img, "png", new File(filename));
 	}

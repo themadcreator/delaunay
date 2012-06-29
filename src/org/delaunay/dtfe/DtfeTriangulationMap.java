@@ -57,7 +57,7 @@ public class DtfeTriangulationMap<T extends DensityModel> extends TriangulationM
 			maxDensity = Utils.maxValue(getTriangulation().getVertices(),
 					new Function<Vertex, Double>() {
 						public Double apply(Vertex v) {
-							return getDensity(v);
+							return Math.abs(getDensity(v));
 						}
 					});
 		}
@@ -70,9 +70,12 @@ public class DtfeTriangulationMap<T extends DensityModel> extends TriangulationM
 	 */
 	public double getRelativeDensity(double d, ScaleType scaleType) {
 		if(d == 0) return 0;
-		return scaleType == ScaleType.LOG ?
+		boolean neg = (d < 0); 
+		d = Math.abs(d);
+		double relativeDensity = scaleType == ScaleType.LOG ?
 				Math.log10(1 + d) / Math.log10(1 + getMaxDensity()) :
 				d / getMaxDensity();
+		return relativeDensity * (neg ? -1 : 1);
 	}
 
 	private void computeDtfe() {

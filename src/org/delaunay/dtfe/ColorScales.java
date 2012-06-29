@@ -54,10 +54,24 @@ public class ColorScales {
 			.stopAlpha(0x4CFFB6, 0xFF, 0.9);
 	
 	public static final ColorScale PURPLE_TO_GREEN_LINEAR = new ColorScale()
-		.stopAlpha(0x260404, 0x00, 0.0)
-		.stopAlpha(0x260404, 0x80, 0.2)
-		.stopAlpha(0x6B3BAB, 0xC0, 0.4)
-		.stopAlpha(0x4CFFB6, 0xFF, 1.0);
+			.stopAlpha(0x260404, 0x00, 0.0)
+			.stopAlpha(0x260404, 0x80, 0.2)
+			.stopAlpha(0x6B3BAB, 0xC0, 0.4)
+			.stopAlpha(0x4CFFB6, 0xFF, 1.0);
+
+	public static final ColorScale RED_TO_BLUE_POS_NEG = new ColorScale()
+			.stopAlpha(0xFF0000, 0xFF, -1.0)
+			.stopAlpha(0xFFFF00, 0x60, -0.5)
+			.stopAlpha(0xFFFFFF, 0x00, 0.0)
+			.stopAlpha(0x00FFFF, 0x60, 0.5)
+			.stopAlpha(0x0000FF, 0xFF, 1.0);
+	
+	public static final ColorScale RED_TO_BLUE = new ColorScale()
+			.stopAlpha(0xFF0000, 0xFF, 0.0)
+			.stopAlpha(0xFFFF00, 0x60, 0.25)
+			.stopAlpha(0xFFFFFF, 0x00, 0.5)
+			.stopAlpha(0x00FFFF, 0x60, 0.75)
+			.stopAlpha(0x0000FF, 0xFF, 1.0);
 
 	public static List<ColorScale> getDefaultColorScales() {
 		return Lists.newArrayList(
@@ -65,6 +79,7 @@ public class ColorScales {
 				LINEAR_RAINBOW,
 				TEMPURATURE,
 				PURPLE_TO_GREEN,
+				RED_TO_BLUE_POS_NEG,
 				BLUE_TO_YELLOW);
 	}
 	

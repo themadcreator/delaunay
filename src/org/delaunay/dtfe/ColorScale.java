@@ -54,4 +54,12 @@ public class ColorScale{
 			return new Color(argb, true);
 		}
 	}
+
+	public double getMinStop() {
+		return stops.first().offset;
+	}
+
+	public double getMaxStop() {
+		return stops.last().offset;
+	}
 }
