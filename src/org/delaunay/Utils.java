@@ -5,6 +5,7 @@ import java.awt.geom.Point2D;
 import java.util.TreeMap;
 
 import org.delaunay.model.Vector;
+import org.delaunay.model.Vertex;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
@@ -66,6 +67,14 @@ public class Utils {
 		return map;
 	}
 
+	public static Iterable<Vertex> toVertices(Iterable<? extends Vector> vectors) {
+		return Iterables.transform(vectors, new Function<Vector, Vertex>() {
+			public Vertex apply(Vector vector) {
+				return new Vertex(vector.x, vector.y);
+			}
+		});
+	}
+	
 	public static Iterable<Point2D> toPoints(Iterable<? extends Vector> vectors) {
 		return Iterables.transform(vectors, new Function<Vector, Point2D>() {
 			public Point2D apply(Vector vector) {

@@ -27,10 +27,11 @@ import org.delaunay.dtfe.painters.TriangulationPainter;
 import org.delaunay.dtfe.painters.TriangulationPainterModel;
 import org.delaunay.model.Vertex;
 
-import com.google.common.collect.Lists;
-
+/**
+ * This class generates the images that are used in the wiki gallery on github.
+ */
 @SuppressWarnings("unused")
-public class Examples {
+public class ExampleImagesDemo {
 	private static final int WIDTH = 800;
 	private static final int HEIGHT = 800;
 

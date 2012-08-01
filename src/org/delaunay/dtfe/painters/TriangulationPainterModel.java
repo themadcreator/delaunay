@@ -6,6 +6,9 @@ public class TriangulationPainterModel {
 	private Color edgeColor = null;
 	private float edgeStrokeWidth = 1.0f;
 
+	private Color vertexDotColor = null;
+	private float vertexDotRadius = 2.0f;
+
 	public Color getEdgeColor() {
 		return edgeColor;
 	}
@@ -23,4 +26,24 @@ public class TriangulationPainterModel {
 		this.edgeStrokeWidth = edgeStrokeWidth;
 		return this;
 	}
+
+	public Color getVertexDotColor() {
+		return vertexDotColor;
+	}
+
+	public TriangulationPainterModel setVertexDotColor(Color vertexColor) {
+		this.vertexDotColor = vertexColor;
+		return this;
+	}
+
+	public float getVertexDotRadius() {
+		return vertexDotRadius;
+	}
+
+	public TriangulationPainterModel setVertexDotRadius(float vertexDotRadius) {
+		this.vertexDotRadius = vertexDotRadius;
+		return this;
+	}
+	
+	
 }

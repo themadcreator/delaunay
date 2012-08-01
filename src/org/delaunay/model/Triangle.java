@@ -75,6 +75,11 @@ public strictfp class Triangle {
 				return t;
 			}
 		}
+		for (Triangle t : b.getNeighborTriangles()) {
+			if (t != this && t.vertices.contains(a)) {
+				return t;
+			}
+		}
 		return null;
 	}
 
@@ -126,5 +131,10 @@ public strictfp class Triangle {
 			area = (c.subtract(a)).cross((b.subtract(a))) / 2.0;
 		}
 		return area;
+	}
+	
+	@Override
+	public String toString() {
+		return String.format("%s -> %s -> %s", a, b, c);
 	}
 }

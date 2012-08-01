@@ -24,7 +24,11 @@ import org.delaunay.dtfe.painters.TriangulationPainter;
 import org.delaunay.dtfe.painters.TriangulationPainterModel;
 import org.delaunay.model.Vertex;
 
-public class Demo {
+/**
+ * This class demonstrates various ways of creating triangulations and DTFEs,
+ * and how to generate images from them.
+ */
+public class TriangulationDemo {
 	private static final int WIDTH = 800;
 	private static final int HEIGHT = 800;
 
@@ -56,7 +60,7 @@ public class Demo {
 		Triangulation t = new Triangulation();
 		t.addAllVertices(Triangulations.randomVertices(1000, 400, 400));
 		t.triangulate();
-		Demo.drawTriangulation(t, 400, 400, "triangulation.png");
+		TriangulationDemo.drawTriangulation(t, 400, 400, "triangulation.png");
 	}
 
 	public static void createTriangulationAndDtfeDemo() throws InvalidVertexException, IOException {

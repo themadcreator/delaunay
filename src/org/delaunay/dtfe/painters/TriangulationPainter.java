@@ -10,6 +10,7 @@ import java.util.Set;
 import org.delaunay.algorithm.Triangulation;
 import org.delaunay.model.Edge;
 import org.delaunay.model.Triangle;
+import org.delaunay.model.Vertex;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
@@ -39,6 +40,18 @@ public class TriangulationPainter {
 				g.drawLine(a.x, a.y, b.x, b.y);
 			}
 		}
+
+		if (model.getVertexDotColor() != null) {
+			g.setColor(model.getVertexDotColor());
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			float r = model.getVertexDotRadius();
+
+			for (Vertex v : triangulation.getVertices()) {
+				Point p = transform.toImagePoint(v);
+				g.fillOval((int)(p.x - r), (int)(p.y - r), (int)(r * 2), (int)(r * 2));
+			}
+		}
+		
 		return img;
 	}
 

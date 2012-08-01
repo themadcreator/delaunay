@@ -130,18 +130,21 @@ public strictfp class Triangulation {
 	}
 
 	public Vertex locateNearestVertex(Vector v) {
-		Triangle tri = locate(v);
-		if (tri == null) {
+		Triangle located = locate(v);
+		if (located == null) {
 			return null;
 		}
 		
 		Vertex bestVertex = null;
 		double dist = Double.MAX_VALUE;
-		for (Vertex vert : tri.getVertices()) {
-			double d = vert.subtract(v).lengthSquared();
-			if (d < dist) {
-				bestVertex = vert;
-				dist = d;
+		
+		for (Triangle tri : getCircumcircleTriangles(v, located)) {
+			for (Vertex vert : tri.getVertices()) {
+				double d = vert.subtract(v).lengthSquared();
+				if (d < dist) {
+					bestVertex = vert;
+					dist = d;
+				}
 			}
 		}
 		return bestVertex;
@@ -383,7 +386,10 @@ public strictfp class Triangulation {
 		if (t == null) {
 			throw new InvalidVertexException();
 		}
+		return getCircumcircleTriangles(vertex, t);
+	}
 
+	private Collection<Triangle> getCircumcircleTriangles(Vector vertex, Triangle t) {
 		Set<Triangle> checked = Sets.newHashSet(t);
 		Set<Triangle> inCircum = Sets.newHashSet(t);
 
