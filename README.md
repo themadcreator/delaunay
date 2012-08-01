@@ -3,7 +3,7 @@ delaunay
 
 Delaunay Triangulation for Java with Hilbert Curve linearization and a Delaunay Tesselation Field Estimator (DTFE)
 
-### Three line demo ###
+### Four line demo ###
 ```Java
 	public static void fourLiner() throws Exception {
 		Triangulation t = new Triangulation();
