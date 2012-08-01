@@ -75,11 +75,6 @@ public strictfp class Triangle {
 				return t;
 			}
 		}
-		for (Triangle t : b.getNeighborTriangles()) {
-			if (t != this && t.vertices.contains(a)) {
-				return t;
-			}
-		}
 		return null;
 	}
 
